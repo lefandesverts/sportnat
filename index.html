@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--<meta charset="utf-8">-->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet"  href="jquerymobile.css" /> 
+	<link rel="stylesheet"  href="sportNat.min.css" /> 
+	
+
+	<script src="jquery.js"></script>
+	<script src="jquerymobile.js"></script>
+	
+	
+	<title>Appli Sport Nat</title>
+        <style>
+           /**** Trying to style h1 and paragraph *******/
+           .myHeader {
+                 color:#cc0000;
+           }
+ 
+           .myParagraph {
+                color:#333;
+		overflow:show;
+		text-overflow:clip;
+		white-space:normal;
+		height:28px;
+		margin-bottom:0px;
+           }
+        </style>
+</head>
+
+<script>
+
+function sendToServer(query) {
+            $.ajax({
+                    beforeSend: function (xhr) {
+                        $.mobile.showPageLoadingMsg();
+                    },
+                    complete: function () {
+                        $.mobile.hidePageLoadingMsg();
+                    },
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded;",
+                    url: "http://lefande.olympe.in/test.php",
+                    dataType: "xml",
+                    data: { page : query },
+                    crossDomain: true,
+                    success:function(data){
+					var i=0;
+						if(query=='news')
+						{
+						
+						
+						$(data).find("news").each(function(){ 
+							i+=1;
+							titre = $(this).find("titre").text(); 
+							date = $(this).find("date").text(); 
+							contenu = $(this).find("contenu").text(); 
+							
+							$('#titre'+i).html(titre); 
+							$('#date'+i).html(date); 
+							$('#content'+i).html(contenu); 
+							$('#titreNews'+i).html(titre); 
+							$('#contenuNews'+i).html(contenu); 
+							
+							  window.localStorage.setItem("contenu"+i, contenu);
+							  window.localStorage.setItem("titre"+i, titre);
+							  window.localStorage.setItem("date"+i, date);
+						}); 
+						
+						}
+						
+						if(query=='babet')
+						{
+						
+						
+						$(data).find("classement").each(function(){ 
+							i+=1;
+							promo = $(this).find("promo").text(); 
+							date = $(this).find("date").text(); 
+							palmares = $(this).find("palmares").text(); 
+							
+							$('#promo'+i).html(promo); 
+							$('#palm'+i).html(palmares); 
+							
+							window.localStorage.setItem("promo"+i, promo);
+							window.localStorage.setItem("palm"+i, palmares);
+							
+						}); 
+										
+					 
+						}
+				
+						
+                    },
+					
+                    error: function () { 
+						if(nbappel==0){
+						
+							alert("Verifiez votre connexion internet et réessayez"); 
+							nbappel++;
+						}
+                    }
+                });
+        } 
+
+function setItem()
+{
+
+
+        window.localStorage.setItem("contenu1", "value");
+        var keyname = window.localStorage.key(i);
+        // keyname is now equal to "key"
+        var value = window.localStorage.getItem("key");
+        // value is now equal to "value"
+        window.localStorage.removeItem("key");
+        window.localStorage.setItem("key2", "value2");
+        window.localStorage.clear();
+        // localStorage is now empty
+    
+
+
+
+}
+
+$(document).ready(function() {
+  // Handler for .ready() called.
+   nbappel=0;
+  var contenu = window.localStorage.getItem("contenu1");
+  
+	if(contenu!=null)
+	{
+		for(i=1;i<6;i++)
+		{
+			var contenu = window.localStorage.getItem("contenu"+i);
+			var titre = window.localStorage.getItem("titre"+i);
+			var date = window.localStorage.getItem("date"+i);
+			$('#titre'+i).html(titre); 
+			$('#date'+i).html(date); 
+			$('#content'+i).html(contenu); 
+			$('#titreNews'+i).html(titre); 
+			$('#contenuNews'+i).html(contenu); 
+			
+			var promo = window.localStorage.getItem("promo"+i);
+			var palmares = window.localStorage.getItem("palm"+i);
+			
+			$('#promo'+i).html(promo); 
+			$('#palm'+i).html(palmares); 
+  
+		}
+  }else{
+	
+	sendToServer('news');
+	sendToServer('babet');
+  }
+});
+</script>
+<body>
+		<div data-role="page" class="type-home" id="foo" data-theme="a">
+			<div data-role="header" data-theme="a"> 
+				<h1>Sport Nat's</h1> 
+				<a href="" onclick="sendToServer('news');nbappel=0;">Refresh</a>
+			</div>
+			<div data-role="navbar" data-theme="a" data-dividertheme="a"> 
+				
+				<ul data-theme="a">
+			<li><a href="#foo" class="ui-btn-active ui-state-persist" data-transition="none">Accueil</a></li>
+			<li><a href="#babet" data-transition="none">Babet d'or</a></li>
+			<li><a href="#about" data-transition="none">About</a></li>
+				</ul>
+			</div>	
+				
+				
+                        <div data-role="content">
+                             <ul id="listeinfos" data-role="listview" data-inset="true" data-theme="a" data-dividertheme="a">
+				<li id="overview" data-role="list-divider" data-theme="b">Liste des News</li>
+				
+				<li><a href="#news1" data-transition="none"> <h1 class="myHeader">
+				<span id="date1"> 29/10/2012 </span>&nbsp; <span id="titre1"></span> </h1>
+				<p class="myParagraph"><span id="content1"></span></p></a></li>
+				
+				<li><a href="#news2" data-transition="none">  <h1 class="myHeader">
+				<span id="date2"> 29/10/2012 </span>&nbsp;<span id="titre2"></span> </h1>
+				<p class="myParagraph"><span id="content2"></span></p></a></li>
+				
+				<li><a href="#news3" data-transition="none">  <h1 class="myHeader">
+				<span id="date3"> 29/10/2012 </span>&nbsp;<span id="titre3"> </span></h1>
+				<p class="myParagraph"><span id="content3"></span></p></a></li>
+				
+				<li><a href="#news4" data-transition="none">  <h1 class="myHeader">
+				<span id="date4"> 29/10/2012 </span>&nbsp;<span id="titre4"></span></h1>
+				<p class="myParagraph"><span id="content4"></span></p></a></li>
+				
+				<li><a href="#news5" data-transition="none"> <h1 class="myHeader">
+				<span id="date5"> 29/10/2012 </span>&nbsp;<span id="titre5"></span> </h1>
+				<p class="myParagraph"><span id="content5"></span></p></a></li>
+			     </ul>
+                        </div>
+					
+               </div>
+			   
+			   
+		
+
+<!-- Start of About -->
+<div data-role="page" class="type-home" id="about" data-theme="a">
+			<div data-role="header" data-theme="a"> 
+				<h1>Sport Nat's</h1> 
+			</div>
+			<div data-role="navbar" data-theme="a" data-dividertheme="a"> 
+				
+				<ul data-theme="a">
+			<li><a href="#foo" data-transition="none" >Accueil</a></li>
+			<li><a href="#babet" data-transition="none">Babet d'or</a></li>
+			<li><a href="#about" class="ui-btn-active ui-state-persist" data-transition="none">About</a></li>
+				</ul>
+			</div>	
+				
+				
+                        <div data-role="content">
+ <p>Depuis 9 ans au sein de l’ESISAR, le club Sport Nature anime la vie sportive de l’école. Parti de rien, un petit groupe de sportifs s’est lancé dans l’organisation d’activités physique et sportives proches de la nature. Ainsi avec peu de moyens, ils ont réussi à mettre en place une structure qui aujourd’hui est en plein épanouissement.
+L’envie des membres du bureau et la bonne humeur des participants permettent
+au club d’étendre le panel des activités au fur et à mesure des années. </p>
+
+<h1>Ainsi en 2012-2013, le club Sport Nature
+ est heureux de vous proposer :</h1>
+ 
+<h2>Des créneaux hebdomadaires</h2>
+
+<p>Le mercredi 19h30-21h30 : multisport au CSU
+Chaque créneau est encadré par un des membres du club afin de s’assurer du bon déroulement de ces sports.</p>
+
+<h2>Une multitude d’évènements ponctuels :</h2>
+
+Lasergame</br>
+Rando VTT</br>
+Sortie Ski</br>
+Patinoire</br>
+Week end Sport Nature</br>
+Et bien d’autres qu’on vous fera découvrir</br>
+ 
+<h2>Des rencontres sportives inter-Esisar : </h2>
+<p>Les Coupes Snature ou Interpromo</p>
+<p>Sur une soirée, des équipes composées d’élèves de l’école mais aussi de permanents 
+s’affrontent sur un terrain de fairplay et de bonne humeur. Le but principal,
+ avant la victoire, étant de regrouper dans la convivialité les étudiants 
+ autour du sport. Cette année seront proposés : futsall, basketball, handball et volleyball. 
+ Les étudiants victorieux sont récompensés lors d’une remise des prix qui a lieu en fin de soirée et 
+ pendant laquelle tous les participants sont remerciés autour d’un buffet… </p>
+ 
+<h2>Une sortie ski au 7 Laux à tarif préférentiel</h2>
+ 
+<h2>Une sortie VTT </h2> qui sera organisé au mois d’Avril et dont les informations seront ajoutées au fur et à mesure de l’avancement du projet.
+ 
+<h2>Le Week-End Sport Nature : </h2>
+<p>C’est l’âme du club. Sur un week-end durant le mois de mai,
+ tous les membres du club e mettent en quatre pour vous dénicher des
+ activités diverses et variées telles que du canoë, de l’accrobranche,
+ de la via corda, de la spéléologie… Tout cela étant mis à disposition 
+ pour une somme dérisoire avoisinant les 50€. </p> 
+ 
+                        </div>
+               </div>
+
+<!-- Start of Babet d'or-->
+<div data-role="page" class="type-home" id="babet" data-theme="a">
+			<div data-role="header" data-theme="a"> 
+				<h1>Sport Nat's</h1> 
+				<a href="javascript:sendToServer('babet');">Refresh</a>
+			</div>
+			<div data-role="navbar" data-theme="a" data-dividertheme="a"> 
+				
+				<ul data-theme="a">
+			<li><a href="#foo" data-transition="none">Accueil</a></li>
+			<li><a href="#babet" class="ui-btn-active ui-state-persist" data-transition="none" >Babet d'or</a></li>
+			<li><a href="#about" data-transition="none">About</a></li>
+				</ul>
+			</div>	
+				
+				
+             <div data-role="content">
+               <ul id="listeinfos" data-role="listview" data-inset="true" data-theme="a" data-dividertheme="a">
+				<li id="overview" data-role="list-divider" data-theme="b">Classement</li>
+				<li><img src="images/babetOr.png"> 
+				<h1 class="myHeader"><span id="promo1">5A-P2013</span></h1>
+				<p class="myParagraph"><span id="palm1"> 2 OR, 1 ARGENT</span></p></li>
+				
+				<li><img src="images/babetArgent.png">
+				<h1 class="myHeader"><span id="promo2">5A-P2013</span></h1>
+				<p class="myParagraph"><span id="palm2"> 2 OR, 1 ARGENT</span></p></li>
+				
+				<li><img src="images/babetBronze.png">
+				<h1 class="myHeader"><span id="promo2">5A-P2013</span> </h1>
+				<p class="myParagraph">	<span id="palm3"> 2 OR, 1 ARGENT</span></p></li>
+				
+				<li><img src="images/babetBronze.png">
+				<h1 class="myHeader"><span id="promo3">5A-P2013</span> </h1>
+				<p class="myParagraph">	<span id="palm4"> 2 OR, 1 ARGENT</span></p></li>
+				
+				<li><img src="images/babetBronze.png"> <h1 class="myHeader">
+				<span id="promo4">5A-P2013</span> </h1>
+				<p class="myParagraph"><span id="palm5"> 2 OR, 1 ARGENT</span></p></li>
+			     </ul>
+                        </div>
+               </div>
+
+
+	   <!-- Pages News -->
+
+<!-- Pages News 1 -->
+<div data-role="page" class="type-home" id="news1" data-theme="a">
+
+	<div data-role="header" data-theme="a">
+		<h1>News</h1>
+		 <a data-rel="back">Back </a>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+	
+		<h1><div id="titreNews1">
+		Sport nat c'est cool
+		</div></h1>
+		
+		<div id="contenuNews1">
+		Fais demi tour et appui sur Refresh ;) 
+		</div>
+		
+	</div><!-- /page -->
+</div>	
+
+<!-- Pages News 2 -->
+<div data-role="page" class="type-home" id="news2" data-theme="a">
+
+	<div data-role="header" data-theme="a">
+		<h1>News</h1>
+		 <a data-rel="back">Back </a>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+	
+		<h1><div id="titreNews2">
+		Sport nat c'est cool
+		</div></h1>
+		
+		<div id="contenuNews2">
+		Fais demi tour et appui sur Refresh ;) 
+		</div>
+		
+	</div><!-- /page -->
+</div>	
+
+<!-- Pages News 3 -->
+<div data-role="page" class="type-home" id="news3" data-theme="a">
+
+	<div data-role="header" data-theme="a">
+		<h1>News</h1>
+		 <a data-rel="back">Back </a>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+	
+		<h1><div id="titreNews3">
+		Sport nat c'est cool
+		</div></h1>
+		
+		<div id="contenuNews3">
+		Fais demi tour et appui sur Refresh ;) 
+		</div>
+		
+	</div><!-- /page -->
+</div>	
+
+<!-- Pages News 4 -->
+<div data-role="page" class="type-home" id="news4" data-theme="a">
+
+	<div data-role="header" data-theme="a">
+		<h1>News</h1>
+		 <a data-rel="back">Back </a>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+	
+		<h1><div id="titreNews4">
+		Sport nat c'est cool
+		</div></h1>
+		
+		<div id="contenuNews4">
+		Fais demi tour et appui sur Refresh ;) 
+		</div>
+		
+	</div><!-- /page -->
+</div>	
+
+<!-- Pages News 5 -->
+<div data-role="page" class="type-home" id="news5" data-theme="a">
+
+	<div data-role="header" data-theme="a">
+		<h1>News</h1>
+		 <a data-rel="back">Back </a>
+	</div><!-- /header -->
+
+	<div data-role="content" >	
+	
+		<h1><div id="titreNews5">
+		Sport nat c'est cool
+		</div></h1>
+		
+		<div id="contenuNews5">
+		Fais demi tour et appui sur Refresh ;) 
+		</div>
+		
+	</div><!-- /page -->
+</div>			   
+		
+
+	
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+</body>
+</html>
